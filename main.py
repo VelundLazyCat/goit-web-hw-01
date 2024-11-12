@@ -7,6 +7,29 @@ from pathlib import Path
 file_path = Path("database.bin")
 
 
+class View(ABC):
+
+    @abstractmethod
+    def display_contact(self, record):
+        pass
+
+    @abstractmethod
+    def display_all_contacts(self, record):
+        pass
+
+    @abstractmethod
+    def display_commands(self):
+        pass
+
+    @abstractmethod
+    def display_message(self, message):
+        pass
+
+    @abstractmethod
+    def display_error(self, error_message):
+        pass
+
+
 class Field:
     def __init__(self, value):
         self.value = value
@@ -124,6 +147,40 @@ class AddressBook(UserDict):
                 )
 
         return upcoming_birthdays
+
+
+class ConsoleView(View):
+    def display_contact(self, record):
+        print(f'Name: {record.name.value}')
+        for phone in record.phones:
+            print(f'Phones: {phone.value}')
+        if record.birthday:
+            print(f'Birthday: {record.birthday.value}')
+
+    def display_all_contacts(self, contacts):
+        for record in contacts:
+            print(record)
+
+    def display_commands(self):
+        commands = [
+            'add [name] [phone] - Add a new contact"',
+            'change [name] [old_phone] [new_phone] - Change a contact phone',
+            'phone [name] - Show the phone number of a contact',
+            'all - Show all contacts',
+            'add-birthday [name] [birthday] - Add a birthday to a contact',
+            'show-birthday [name] - Show the birthday of a conctact',
+            'birthdays [days] - Show the birthdays in the next N days',
+            'exit - Exit the app'
+        ]
+        print('Available commands:')
+        for command in commands:
+            print(f'{command}')
+
+    def display_message(self, message):
+        print(message)
+
+    def display_error(self, error_message):
+        print(f'Error: {error_message}')
 
 
 def input_error(func):
@@ -258,62 +315,6 @@ def main():
             print("Invalid command.")
 
 
-class View(ABC):
-
-    @abstractmethod
-    def display_contact(self, record):
-        pass
-
-    @abstractmethod
-    def display_all_contacts(self, record):
-        pass
-
-    @abstractmethod
-    def display_commands(self):
-        pass
-
-    @abstractmethod
-    def display_message(self, message):
-        pass
-
-    @abstractmethod
-    def display_error(self, error_message):
-        pass
-
-
-class ConsoleView(View):
-    def display_contact(self, record):
-        print(f'Name: {record.name.value}')
-        for phone in record.phones:
-            print(f'Phones: {phone.value}')
-        if record.birthday:
-            print(f'Birthday: {record.birthday.value}')
-
-    def display_all_contacts(self, contacts):
-        for record in contacts:
-            print(record)
-
-    def display_commands(self):
-        commands = [
-            'add [name] [phone] - Add a new contact"',
-            'change [name] [old_phone] [new_phone] - Change a contact phone',
-            'phone [name] - Show the phone number of a contact',
-            'all - Show all contacts',
-            'add-birthday [name] [birthday] - Add a birthday to a contact',
-            'show-birthday [name] - Show the birthday of a conctact',
-            'birthdays [days] - Show the birthdays in the next N days',
-            'exit - Exit the app'
-        ]
-        print('Available commands:')
-        for command in commands:
-            print(f'{command}')
-
-    def display_message(self, message):
-        print(message)
-
-    def display_error(self, error_message):
-        print(f'Error: {error_message}')
-
-
 if __name__ == "__main__":
     main()
+
